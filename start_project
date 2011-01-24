@@ -1,5 +1,21 @@
 #!/bin/bash
 
+function display_usage() {
+    echo "USAGE: $(basename $0) [OPTION] PROJECT_NAME"
+    echo
+    echo "OPTIONS:"
+    echo "  -d  The path to the directory where your project will"
+    echo "      be created. Defaults to the value of environment"
+    echo "      variable \$DEST_DIR or, if not present, to the"
+    echo "      current directory"
+    echo
+    echo "  -a  The path to your Arduino files (needed for library"
+    echo "      support). Defaults to the value of environment"
+    echo "      variable \$ARDUINO_DIR or, if not present, to the"
+    echo "      current directory"
+    echo
+}
+
 # We really need a sane option parsing mechanism.
 # This is really limited, but the alternatives I
 # could find for bash are even worse from what I read.
@@ -16,6 +32,8 @@ do
             ;;
         \?)
             echo "Invalid option -$OPTARG"
+            echo
+            display_usage
             exit 1
             ;;
         :)
@@ -31,7 +49,7 @@ ARGS=${@:$OPTIND}
 
 if [ -z "${ARGS[0]}" ]
 then
-    echo "You need to provide a project name: \`$(basename $0) <project>'"
+    display_usage
     exit 1
 else
     PROJECT_NAME="${ARGS[0]}"
