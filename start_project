@@ -21,7 +21,7 @@ function display_usage() {
 # could find for bash are even worse from what I read.
 # I'm really considering writing this in python just
 # to use optparse or something.
-while getopts ':d:a:' OPT
+while getopts ':d:a:h' OPT
 do
     case $OPT in
         a)
@@ -29,6 +29,10 @@ do
             ;;
         d)
             DEST_DIR="$(readlink -f "$OPTARG")"
+            ;;
+        d)
+            display_usage
+            exit 0
             ;;
         \?)
             echo "Invalid option -$OPTARG"
