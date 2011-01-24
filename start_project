@@ -1,0 +1,21 @@
+#!/bin/bash
+
+PROJECT_NAME="$1"
+DEST_DIR="$PWD"
+ARDUINO_DIR="$PWD"
+
+WORKING_DIR="$(dirname $(readlink -f "$0"))"
+SKEL="$WORKING_DIR/skel"
+MAIN_MAKEFILE="$WORKING_DIR/arduino-mk/Arduino.mk"
+
+PROJECT_DIR="$DEST_DIR/$PROJECT_NAME"
+
+cp -r "$SKEL" "$PROJECT_DIR"
+mv "$PROJECT_DIR/project.pde" "$PROJECT_DIR/$PROJECT_NAME.pde"
+
+sed -i "s!__PROJECT_NAME__!$PROJECT_NAME!g" "$PROJECT_DIR/Makefile"
+sed -i "s!__ARDUINO_DIR__!$ARDUINO_DIR!g" "$PROJECT_DIR/Makefile"
+sed -i "s!__MAIN_MAKEFILE__!$MAIN_MAKEFILE!g" "$PROJECT_DIR/Makefile"
+
+echo "Project $PROJECT_NAME created in $PROJECT_DIR"
+echo "Use \`make' to build the project and \`make upload' to send it to your arduino"
