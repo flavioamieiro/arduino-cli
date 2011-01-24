@@ -1,8 +1,44 @@
 #!/bin/bash
 
-PROJECT_NAME="$1"
-DEST_DIR="$PWD"
-ARDUINO_DIR="$PWD"
+# We really need a sane option parsing mechanism.
+# This is really limited, but the alternatives I
+# could find for bash are even worse from what I read.
+# I'm really considering writing this in python just
+# to use optparse or something.
+while getopts ':d:a:' OPT
+do
+    case $OPT in
+        a)
+            ARDUINO_DIR="$(readlink -f "$OPTARG")"
+            ;;
+        d)
+            DEST_DIR="$(readlink -f "$OPTARG")"
+            ;;
+        \?)
+            echo "Invalid option -$OPTARG"
+            exit 1
+            ;;
+        :)
+            echo "Option $OPT requires an argument"
+            exit 1
+            ;;
+    esac
+done
+# A horrible hack to get the positional arguments.
+# Someone please tell me there's a better way to do
+# this only I'm too stupid to find out!
+ARGS=${@:$OPTIND}
+
+if [ -z "${ARGS[0]}" ]
+then
+    echo "You need to provide a project name: \`$(basename $0) <project>'"
+    exit 1
+else
+    PROJECT_NAME="${ARGS[0]}"
+fi
+
+DEST_DIR=${DEST_DIR:=$PWD}
+ARDUINO_DIR=${ARDUINO_DIR:=$PWD}
 
 WORKING_DIR="$(dirname $(readlink -f "$0"))"
 SKEL="$WORKING_DIR/skel"
